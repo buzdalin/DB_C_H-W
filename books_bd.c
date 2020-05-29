@@ -1,7 +1,7 @@
 
 int cmd_b(char cmdi[])
 {
-  char cmd[100]="add_buk6all_buk1del_buk2bup_buk3fnd_buk4rtr_buk5fnd_b_s7";
+  char cmd[100]="add_buk6all_buk1del_buk2bup_buk3fnd_buk4rtr_buk5fnd_b_s7sdh_vdh8";
   if (cmdi[0]=='0')
   {
     return 0;
@@ -268,14 +268,146 @@ void fnd_b_s()
   }
 }
 
-void main_b()
+void sdch_vdch()
+{
+  int cmd;
+  printf("1: Sdat'\n2: Vidat'\n");
+  scanf("%d", &cmd);
+  if (!((cmd==1)||(cmd==2)))
+  {
+    sdch_vdch();
+  }
+  int i=0, j=0, k=0, l=0, m=0, p=0;
+  char ISBN[14], zach[7];
+  printf("Zach:\n");
+  scanf("%s", zach);
+  printf("ISBN:\n");
+  scanf("%s", ISBN);
+  FILE *bd;
+  bd=fopen("students_books.csv", "r");
+  while (fscanf (bd, "%[^;] %*c %[^;] %*c %[^\t^;^\n]%*c", BD[i].ISBN, BD[i].zach, BD[i].date)!=EOF)
+    {
+      i++;
+    }
+  fclose(bd);
+
+  FILE *st_bd;
+  st_bd = fopen("students.csv", "r");
+  while (fscanf (st_bd, "%[^;] %*c %[^;] %*c %[^;] %*c %[^;] %*c %[^;] %*c %[^\t^;^\n]%*c", olds[k].zach, olds[k].ser, olds[k].nam, olds[k].last, olds[k].fc, olds[k].sp)!=EOF)
+    {
+      k++;
+    }
+  fclose(st_bd);
+
+  FILE *bk_bd;
+  bk_bd = fopen("books.csv", "r");
+  while (fscanf (bk_bd, "%[^;] %*c %[^\t^;] %*c %[^\t^;] %*c %[^;] %*c  %[^;^\n]%*c", oldb[m].ISBN, oldb[m].FIO, oldb[m].naz, oldb[m].vs, oldb[m].rk)!=EOF)
+    {
+      m++;
+    }
+  fclose(bk_bd);
+  while (j!=i)
+  {
+    if (!strcmp(zach, olds[j].zach))
+    {
+      while(l!=k)
+      {
+        if (!strcmp(ISBN, oldb[l].ISBN))
+        {
+          if (cmd==1) //sdacha
+          {
+            long int stime;
+            struct tm *ltime;
+            stime = time (NULL);
+            ltime = localtime (&stime);
+            char atime[32];
+            strftime (atime, 32, "%d.%m.%Y", ltime); //%x и %X не робят(
+            FILE *bd;
+            bd=fopen("students_books.csv", "a");
+            fprintf(bd, "%s;%s;\"%s\"\n", oldb[l].ISBN, olds[j].zach, atime);
+            fclose(bd);
+
+            while(oldb[l].rk[p+1]!='\0')
+            {
+              p++;
+            }
+            if (oldb[l].rk[p]=='9')
+            {
+              oldb[l].rk[p]='0';
+              oldb[l].rk[p-1]++;
+            }
+            else
+              ++oldb[l].rk[p];
+            bk_bd = fopen("books.csv", "w");
+            for (int n=0; n < m; ++n)
+            {
+              fprintf(bk_bd, "%s;%s;%s;%s;%s\n", oldb[n].ISBN, oldb[n].FIO, oldb[n].naz, oldb[n].vs, oldb[n].rk);
+            }
+            fclose(bk_bd);
+            printf("SUCESS\n");
+            return;
+          }
+          if (cmd==2) //vidacha
+          {
+              printf("Data sdachi\n");
+              printf("DD.MM.YYYY\n");
+              char atime[32];
+              scanf("%s", atime);
+              FILE *bd;
+              bd=fopen("students_books.csv", "a");
+              fprintf(bd, "%s;%s;\"%s\"\n", oldb[l].ISBN, olds[j].zach, atime);
+              fclose(bd);
+              while(oldb[l].rk[p+1]!='\0')
+              {
+                p++;
+              }
+              if (oldb[l].rk[p]=='0')
+              {
+                if (oldb[l].rk[p-1]=='0')
+                {
+                  printf("NEVOZMOZNO\n");
+                  return;
+                }
+
+                oldb[l].rk[p]='9';
+                oldb[l].rk[p-1]--;
+              }
+              else
+                --oldb[l].rk[p];
+              printf("%s\n", oldb[l].rk);
+              bk_bd = fopen("books.csv", "w");
+              for (int n=0; n < m; ++n)
+              {
+                fprintf(bk_bd, "%s;%s;%s;%s;%s\n", oldb[n].ISBN, oldb[n].FIO, oldb[n].naz, oldb[n].vs, oldb[n].rk);
+              }
+              fclose(bk_bd);
+              printf("SUCESS\n");
+              return;
+          }
+        }
+        l++;
+      }
+      printf("No such book\n");
+      return;
+    }
+    j++;
+  }
+  printf("No such student\n");
+  return;
+}
+
+void main_b(char* usr)
 { 
+  long int stime;
+  struct tm *ltime;
+  char atime[32];
+  FILE *log;
   int i=0;
   char cmdi[50], c;
   c=getchar();
   if (c=='\n')
   {
-    return main_b();
+    return main_b(usr);
   }
   if (c==EOF)
   {
@@ -292,37 +424,95 @@ void main_b()
    {
      case 6:
         add_b();
-        return main_b();
+            stime = time (NULL);
+            ltime = localtime (&stime);
+            strftime (atime, 32, "%d.%m.%Y_%X", ltime);
+            log=fopen("library.log", "a");
+            fprintf(log, "\"%s\";%s;\"BookAdd\"\n", atime, usr);
+            fclose(log);
+        return main_b(usr);
         break;
      case 1:
         all_b();
-        return main_b();
+            stime = time (NULL);
+            ltime = localtime (&stime);
+            strftime (atime, 32, "%d.%m.%Y_%X", ltime);
+            log=fopen("library.log", "a");
+            fprintf(log, "\"%s\";%s;\"BookTable\"\n", atime, usr);
+            fclose(log);
+        return main_b(usr);
         break;
      case 2:
         dell_b();
-        return main_b();
+            stime = time (NULL);
+            ltime = localtime (&stime);
+            strftime (atime, 32, "%d.%m.%Y_%X", ltime);
+            log=fopen("library.log", "a");
+            fprintf(log, "\"%s\";%s;\"BookDelete\"\n", atime, usr);
+            fclose(log);
+        return main_b(usr);
         break;
      case 3:
         back_b();
-        return main_b();
+            stime = time (NULL);
+            ltime = localtime (&stime);
+            strftime (atime, 32, "%d.%m.%Y_%X", ltime);
+            log=fopen("library.log", "a");
+            fprintf(log, "\"%s\";%s;\"BookBackUp\"\n", atime, usr);
+            fclose(log);
+        return main_b(usr);
         break;
      case 4:
         find_b();
-        return main_b();
+            stime = time (NULL);
+            ltime = localtime (&stime);
+            strftime (atime, 32, "%d.%m.%Y_%X", ltime);
+            log=fopen("library.log", "a");
+            fprintf(log, "\"%s\";%s;\"BookSerch\"\n", atime, usr);
+            fclose(log);        
+        return main_b(usr);
         break;
      case 5:
         restore_b();
-        return main_b();
+            stime = time (NULL);
+            ltime = localtime (&stime);
+            strftime (atime, 32, "%d.%m.%Y_%X", ltime);
+            log=fopen("library.log", "a");
+            fprintf(log, "\"%s\";%s;\"BookRestore\"\n", atime, usr);
+            fclose(log);        
+        return main_b(usr);
         break;
      case 7:
         fnd_b_s();
-        return main_b();
+            stime = time (NULL);
+            ltime = localtime (&stime);
+            strftime (atime, 32, "%d.%m.%Y_%X", ltime);
+            log=fopen("library.log", "a");
+            fprintf(log, "\"%s\";%s;\"BookFindStudent\"\n", atime, usr);
+            fclose(log);        
+        return main_b(usr);
+        break;
+     case 8:
+        sdch_vdch();
+            stime = time (NULL);
+            ltime = localtime (&stime);
+            strftime (atime, 32, "%d.%m.%Y_%X", ltime);
+            log=fopen("library.log", "a");
+            fprintf(log, "\"%s\";%s;\"BookSdach-Vidacha\"\n", atime, usr);
+            fclose(log);        
+        return main_b(usr);
         break;
      case -1:
         printf("ERROR. Wrong comand\n");
-        return main_b();
+        return main_b(usr);
         break;
      case 0:
+            stime = time (NULL);
+            ltime = localtime (&stime);
+            strftime (atime, 32, "%d.%m.%Y_%X", ltime);
+            log=fopen("library.log", "a");
+            fprintf(log, "\"%s\";%s;\"BookBackToMenu\"\n", atime, usr);
+            fclose(log);
         return;
    }
 }
