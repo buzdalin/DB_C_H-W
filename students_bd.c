@@ -261,14 +261,17 @@ void fnd_s_b()
   }
 }
 
-void main_s()
+void main_s(char* usr)
 { 
+  long int stime;
+  struct tm *ltime;
+  FILE *log;
   int i=0;
   char cmdi[50], c;
   c=getchar();
   if (c=='\n')
   {
-    return main_s();
+    return main_s(usr);
   }
   if (c==EOF)
   {
@@ -285,37 +288,86 @@ void main_s()
    {
      case 6:
         add_s();
-        return main_s();
+            stime = time (NULL);
+            ltime = localtime (&stime);
+            char atime[32];
+            strftime (atime, 32, "%d.%m.%Y_%X", ltime);
+            log=fopen("library.log", "a");
+            fprintf(log, "\"%s\";%s;\"StudentAdd\"\n", atime, usr);
+            fclose(log);
+        return main_s(usr);
         break;
      case 1:
         all_s();
-        return main_s();
+            stime = time (NULL);
+            ltime = localtime (&stime);
+            strftime (atime, 32, "%d.%m.%Y_%X", ltime);
+            log=fopen("library.log", "a");
+            fprintf(log, "\"%s\";%s;\"StudentTable\"\n", atime, usr);
+            fclose(log);
+        return main_s(usr);
         break;
      case 2:
         dell_s();
-        return main_s();
+            stime = time (NULL);
+            ltime = localtime (&stime);
+            strftime (atime, 32, "%d.%m.%Y_%X", ltime);
+            log=fopen("library.log", "a");
+            fprintf(log, "\"%s\";%s;\"StudentDelete\"\n", atime, usr);
+            fclose(log);
+        return main_s(usr);
         break;
      case 3:
         back_s();
-        return main_s();
+            stime = time (NULL);
+            ltime = localtime (&stime);
+            strftime (atime, 32, "%d.%m.%Y_%X", ltime);
+            log=fopen("library.log", "a");
+            fprintf(log, "\"%s\";%s;\"StudentBackUp\"\n", atime, usr);
+            fclose(log);
+        return main_s(usr);
         break;
      case 4:
         find_s();
-        return main_s();
+            stime = time (NULL);
+            ltime = localtime (&stime);
+            strftime (atime, 32, "%d.%m.%Y_%X", ltime);
+            log=fopen("library.log", "a");
+            fprintf(log, "\"%s\";%s;\"StudentSerch\"\n", atime, usr);
+            fclose(log);
+        return main_s(usr);
         break;
      case 5:
         restore_s();
-        return main_s();
+            stime = time (NULL);
+            ltime = localtime (&stime);
+            strftime (atime, 32, "%d.%m.%Y_%X", ltime);
+            log=fopen("library.log", "a");
+            fprintf(log, "\"%s\";%s;\"StudentRestore\"\n", atime, usr);
+            fclose(log);
+        return main_s(usr);
         break;
      case 7:
         fnd_s_b();
-        return main_s();
+            stime = time (NULL);
+            ltime = localtime (&stime);
+            strftime (atime, 32, "%d.%m.%Y_%X", ltime);
+            log=fopen("library.log", "a");
+            fprintf(log, "\"%s\";%s;\"StudentFindBook\"\n", atime, usr);
+            fclose(log);
+        return main_s(usr);
         break;
      case -1:
         printf("ERROR. Wrong comand\n");
-        return main_s();
+        return main_s(usr);
         break;
       case 0:
+            stime = time (NULL);
+            ltime = localtime (&stime);
+            strftime (atime, 32, "%d.%m.%Y_%X", ltime);
+            log=fopen("library.log", "a");
+            fprintf(log, "\"%s\";%s;\"StudentBackToMenu\"\n", atime, usr);
+            fclose(log);
         return;
    }
 }
