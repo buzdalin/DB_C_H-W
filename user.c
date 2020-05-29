@@ -39,7 +39,7 @@ struct user {
 #include "students_bd.c"
 
 
-void login(int* bk, int* us)
+void login(int* bk, int* us, char* login)
 {
 	int i=0;
   	FILE *bk_bd;
@@ -50,10 +50,8 @@ void login(int* bk, int* us)
   	    i++;
   	  }
   	fclose(bk_bd);
-	char login[50];
 	char pass[50];
 	int j=0;
-	scanf("%s", login);
 	while (j!=i)
 	{
 	    if (!strcmp(login, lin[j].lgn))
@@ -61,6 +59,7 @@ void login(int* bk, int* us)
 	    	scanf("%s", pass);
 	      if (!strcmp(pass, lin[j].psw))
 	      {
+
 	      	*bk=lin[j].bk;
 			*us=lin[j].st;
 	    	return;
@@ -79,10 +78,12 @@ void login(int* bk, int* us)
 
 int main()
 {
+	
 	int bk=0, us=0;	
-	char c;
+	char c, lgn[50];
 	printf("Please login:\n");
-	login(&bk, &us);
+	scanf("%s", lgn);
+	login(&bk, &us, lgn);
 	if ((bk==us)&&(bk==1))
 	{
 		printf("1: Students\n2: Books\n");
@@ -92,13 +93,13 @@ int main()
 			if (c=='1')
 			{
 				printf("---Students---\n");
-				main_s();
+				main_s(lgn);
 				printf("1: Students\n2: Books\n");
 			}
 			if (c=='2')
 			{
 				printf("---Books---\n");
-				main_b();
+				main_b(lgn);
 				printf("1: Students\n2: Books\n");
 			}
 		}
@@ -106,13 +107,13 @@ int main()
 	else if ((bk!=us)&&(bk==1))
 	{
 		printf("---Books---\n");
-		main_b();
+		main_b(lgn);
 		return 0;
 	}
 	else if ((bk!=us)&&(us==1))
 	{
 		printf("---Students---\n");
-		main_s();
+		main_s(lgn);
 	}
 	return 0;
 }
