@@ -9,9 +9,10 @@ int cmd_s(char cmdi[], char usr[])
     comd[5].cmd="Restore";
     comd[6].cmd="Find_Book";
     comd[7].cmd="Find_Book";
+    comd[8].cmd="Edit";
 
 
-    for (int i=0; i < 8; ++i)
+    for (int i=0; i < 9; ++i)
     {
         if (!strcmp(cmdi, comd[i].cmd))
         {
@@ -32,10 +33,6 @@ int cmd_s(char cmdi[], char usr[])
     return -1;
 }
 
-void lib(char* usr)
-{
-
-}
 
 int serch_s(char* zach)
 {
@@ -269,6 +266,57 @@ void fnd_s_b()
   }
 }
 
+void edit_s()
+{
+  int i=0;
+  FILE *st_bd;
+  
+  st_bd = fopen("students.csv", "r");
+  while (fscanf (st_bd, "%[^;] %*c %[^;] %*c %[^;] %*c %[^;] %*c %[^;] %*c %[^\t^;^\n]%*c", olds[i].zach, olds[i].ser, olds[i].nam, olds[i].last, olds[i].fc, olds[i].sp)!=EOF)
+    {
+      i++;
+    }
+  fclose(st_bd);
+  struct students new;
+  char zach[14];
+  printf("zach:\n");
+  scanf("%s", zach);
+  for (int j = 0; j < i; ++j)
+  {
+    if (!strcmp(zach, olds[j].zach))
+      {
+        printf("Old ser:\n%s\nEnter new:\n", olds[j].ser);
+        scanf("\n%[^\t^\n]%*c", new.ser);
+        printf("Old name:\n%s\nEnter new:\n", olds[j].nam);
+        scanf("\n%[^\t^\n]%*c", new.nam);
+        printf("Old last name:\n%s\nEnter new:\n", olds[j].last);
+        scanf("%s", new.last);
+        printf("Old fc:\n%s\nEnter new:\n", olds[j].fc);
+        scanf("%s", new.fc);
+        printf("Old sp:\n%s\nEnter new:\n", olds[j].sp);
+        scanf("\n%[^\t^\n]%*c", new.sp);
+
+        
+        st_bd = fopen("students.csv", "w");
+        for (int k = 0; k < i; ++k)
+        {
+          if (k==j)
+          {
+            fprintf(st_bd, "%s;%s;%s;%s;%s;%s\n", zach, new.ser, new.nam, new.last, new.fc, new.sp);
+            k++;
+          }
+          fprintf(st_bd, "%s;%s;%s;%s;%s;%s\n", olds[k].zach, olds[k].ser, olds[k].nam, olds[k].last, olds[k].fc, olds[k].sp);
+        }
+        fclose(st_bd);
+        printf("SUCCES!\n");
+        return;
+      }
+  }
+  printf("No such student\n");
+  return;
+}
+
+
 void main_s(char* usr)
 { 
   int i=0;
@@ -317,6 +365,10 @@ void main_s(char* usr)
         break;
      case 7:
         fnd_s_b();
+        return main_s(usr);
+        break;
+     case 8:
+        edit_s();
         return main_s(usr);
         break;
      case -1:
