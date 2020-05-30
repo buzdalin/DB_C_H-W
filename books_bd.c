@@ -9,9 +9,12 @@ int cmd_b(char cmdi[], char usr[])
     comd[5].cmd="Restore";
     comd[6].cmd="Add_Book";
     comd[7].cmd="Find_Student";
-    comd[8].cmd="Sdat'_Vidat'";
+    comd[8].cmd="Sdat'";
+    comd[9].cmd="Vidat'";
+    comd[10].cmd="Edit";
 
-  for (int i=0; i < 9; ++i)
+
+  for (int i=0; i < 11; ++i)
     {
         if (!strcmp(cmdi, comd[i].cmd))
         {
@@ -153,7 +156,7 @@ void dell_b() // problema s poslednimi kikami
 }
 void find_b()
 {
-  int i=0, j=0;
+  int i=0, j=0, k=0;
   FILE *bk_bd;
   
  
@@ -165,18 +168,22 @@ void find_b()
   fclose(bk_bd);
   struct books find;
   printf("Kogo ishem?\n");
-  scanf("%s", find.ISBN);
+  scanf("%[^\t^\n]%*c", find.FIO);
   while (j!=i)
   {
-    if (!strcmp(find.ISBN, oldb[j].ISBN))
+    if (!strcmp(find.FIO, oldb[j].FIO))
     {
       printf("| %s |%-20s|%-15s|%-3s|%-3s|\n", oldb[j].ISBN, oldb[j].FIO, oldb[j].naz, oldb[j].vs, oldb[j].rk);
-      printf("SUCCES\n");
-      return;
+      k++;
     }
     j++;
   }
-  printf("Takih net\n");  
+  if (k==0)
+  {
+    printf("Takih net\n");
+    return; 
+  }
+  return;
 }
 void back_b()
 {
@@ -271,15 +278,8 @@ void fnd_b_s()
   }
 }
 
-void sdch_vdch()
+void sdacha()
 {
-  int cmd;
-  printf("1: Sdat'\n2: Vidat'\n");
-  scanf("%d", &cmd);
-  if (!((cmd==1)||(cmd==2)))
-  {
-    sdch_vdch();
-  }
   int i=0, j=0, k=0, l=0, m=0, p=0;
   char ISBN[14], zach[7];
   printf("Zach:\n");
@@ -316,77 +316,39 @@ void sdch_vdch()
       while(l!=k)
       {
         if (!strcmp(ISBN, oldb[l].ISBN))
-        {
-          if (cmd==1) //sdacha
-          {
-            long int stime;
-            struct tm *ltime;
-            stime = time (NULL);
-            ltime = localtime (&stime);
-            char atime[32];
-            strftime (atime, 32, "%d.%m.%Y", ltime); //%x и %X не робят(
-            FILE *bd;
-            bd=fopen("students_books.csv", "a");
-            fprintf(bd, "%s;%s;\"%s\"\n", oldb[l].ISBN, olds[j].zach, atime);
-            fclose(bd);
+        {     
 
-            while(oldb[l].rk[p+1]!='\0')
-            {
-              p++;
-            }
-            if (oldb[l].rk[p]=='9')
-            {
-              oldb[l].rk[p]='0';
-              oldb[l].rk[p-1]++;
-            }
-            else
-              ++oldb[l].rk[p];
-            bk_bd = fopen("books.csv", "w");
-            for (int n=0; n < m; ++n)
-            {
-              fprintf(bk_bd, "%s;%s;%s;%s;%s\n", oldb[n].ISBN, oldb[n].FIO, oldb[n].naz, oldb[n].vs, oldb[n].rk);
-            }
-            fclose(bk_bd);
-            printf("SUCESS\n");
-            return;
-          }
-          if (cmd==2) //vidacha
+          while(oldb[l].rk[p+1]!='\0')
           {
-              printf("Data sdachi\n");
-              printf("DD.MM.YYYY\n");
-              char atime[32];
-              scanf("%s", atime);
-              FILE *bd;
-              bd=fopen("students_books.csv", "a");
-              fprintf(bd, "%s;%s;\"%s\"\n", oldb[l].ISBN, olds[j].zach, atime);
-              fclose(bd);
-              while(oldb[l].rk[p+1]!='\0')
-              {
-                p++;
-              }
-              if (oldb[l].rk[p]=='0')
-              {
-                if (oldb[l].rk[p-1]=='0')
-                {
-                  printf("NEVOZMOZNO\n");
-                  return;
-                }
-
-                oldb[l].rk[p]='9';
-                oldb[l].rk[p-1]--;
-              }
-              else
-                --oldb[l].rk[p];
-              printf("%s\n", oldb[l].rk);
-              bk_bd = fopen("books.csv", "w");
-              for (int n=0; n < m; ++n)
-              {
-                fprintf(bk_bd, "%s;%s;%s;%s;%s\n", oldb[n].ISBN, oldb[n].FIO, oldb[n].naz, oldb[n].vs, oldb[n].rk);
-              }
-              fclose(bk_bd);
-              printf("SUCESS\n");
-              return;
+            p++;
           }
+          if (oldb[l].rk[p]=='9')
+          {
+            oldb[l].rk[p]='0';
+            oldb[l].rk[p-1]++;
+          }
+          else
+            ++oldb[l].rk[p];
+          bk_bd = fopen("books.csv", "w");
+          for (int n=0; n < m; ++n)
+          {
+            fprintf(bk_bd, "%s;%s;%s;%s;%s\n", oldb[n].ISBN, oldb[n].FIO, oldb[n].naz, oldb[n].vs, oldb[n].rk);
+          }
+          fclose(bk_bd);
+
+          long int stime;
+          struct tm *ltime;
+          stime = time (NULL);
+          ltime = localtime (&stime);
+          char atime[32];
+          strftime (atime, 32, "%d.%m.%Y", ltime); //%x и %X не робят(
+          FILE *bd;
+          bd=fopen("students_books.csv", "a");
+          fprintf(bd, "%s;%s;\"%s\"\n", oldb[l].ISBN, olds[j].zach, atime);
+          fclose(bd);
+
+          printf("SUCESS\n");
+          return;
         }
         l++;
       }
@@ -396,6 +358,160 @@ void sdch_vdch()
     j++;
   }
   printf("No such student\n");
+  return;
+}
+
+void vidacha()
+{
+  int i=0, j=0, k=0, l=0, m=0, p=0;
+  char ISBN[14], zach[7];
+
+  FILE *bd;
+  bd=fopen("students_books.csv", "r");
+  while (fscanf (bd, "%[^;] %*c %[^;] %*c %[^\t^;^\n]%*c", BD[i].ISBN, BD[i].zach, BD[i].date)!=EOF)
+    {
+      i++;
+    }
+  fclose(bd);
+
+  FILE *st_bd;
+  st_bd = fopen("students.csv", "r");
+  while (fscanf (st_bd, "%[^;] %*c %[^;] %*c %[^;] %*c %[^;] %*c %[^;] %*c %[^\t^;^\n]%*c", olds[k].zach, olds[k].ser, olds[k].nam, olds[k].last, olds[k].fc, olds[k].sp)!=EOF)
+    {
+      k++;
+    }
+  fclose(st_bd);
+
+  FILE *bk_bd;
+  bk_bd = fopen("books.csv", "r");
+  while (fscanf (bk_bd, "%[^;] %*c %[^\t^;] %*c %[^\t^;] %*c %[^;] %*c  %[^;^\n]%*c", oldb[m].ISBN, oldb[m].FIO, oldb[m].naz, oldb[m].vs, oldb[m].rk)!=EOF)
+    {
+      m++;
+    }
+  fclose(bk_bd);
+
+  printf("Zach:\n");
+  scanf("%s", zach);
+  printf("ISBN:\n");
+  scanf("%s", ISBN);
+
+      for (int rs = 0; rs < m; ++rs)
+      {
+        if (oldb[rs].vs[0]==oldb[rs].rk[0])
+        {
+          printf("No free book\nNearest date:\n");
+          for (int rs = 0; rs < i; ++rs)
+          {
+            if (BD[rs].ISBN==ISBN)
+            {
+              printf("%s\n", BD[rs].date);
+              return;
+            }
+          }
+        }
+      }
+
+  while (j!=i)
+  {
+    if (!strcmp(zach, olds[j].zach))
+    {
+      while(l!=k)
+      {
+        if (!strcmp(ISBN, oldb[l].ISBN))
+        {     
+          printf("Data sdachi\n");
+          printf("DD.MM.YYYY\n");
+          char atime[32];
+          scanf("%s", atime);
+          while(oldb[l].rk[p+1]!='\0')
+          {
+            p++;
+          }
+          if (oldb[l].rk[p]=='0')
+          {
+            if (oldb[l].rk[p-1]=='0')
+            {
+              printf("NEVOZMOZNO\n");
+              return;
+            }
+
+            oldb[l].rk[p]='9';
+            oldb[l].rk[p-1]--;
+          }
+          else
+            --oldb[l].rk[p];
+
+          printf("%s\n", oldb[l].rk);
+          bk_bd = fopen("books.csv", "w");
+          for (int n=0; n < m; ++n)
+          {
+            fprintf(bk_bd, "%s;%s;%s;%s;%s\n", oldb[n].ISBN, oldb[n].FIO, oldb[n].naz, oldb[n].vs, oldb[n].rk);
+          }
+          fclose(bk_bd);
+
+          FILE *bd;
+          bd=fopen("students_books.csv", "a");
+          fprintf(bd, "%s;%s;\"%s\"\n", oldb[l].ISBN, olds[j].zach, atime);
+          fclose(bd);
+
+          printf("SUCESS\n");
+          return;
+        }
+        l++;
+      }
+      printf("No such book\n");
+      return;
+    }
+    j++;
+  }
+  printf("No such student\n");
+  return;
+}
+
+void edit_b()
+{
+  int i=0;
+  FILE *bk_bd;
+  
+  bk_bd = fopen("books.csv", "r");
+  while (fscanf (bk_bd, "%[^;] %*c %[^\t^;] %*c %[^\t^;] %*c %[^;] %*c  %[^;^\n]%*c", oldb[i].ISBN, oldb[i].FIO, oldb[i].naz, oldb[i].vs, oldb[i].rk)!=EOF)
+    {
+      i++;
+    }
+  fclose(bk_bd);
+  struct books new;
+  char ISBN[14];
+  printf("ISBN:\n");
+  scanf("%s", ISBN);
+  for (int j = 0; j < i; ++j)
+  {
+    if (!strcmp(ISBN, oldb[j].ISBN))
+      {
+        printf("Old FIO:\n%s\nEnter new:\n", oldb[j].FIO);
+        scanf("\n%[^\t^\n]%*c", new.FIO);
+        printf("Old name:\n%s\nEnter new:\n", oldb[j].naz);
+        scanf("\n%[^\t^\n]%*c", new.naz);
+        printf("Old qntty:\n%s\nEnter new:\n", oldb[j].vs);
+        scanf("%s", new.vs);
+        printf("Old in held:\n%s\nEnter new:\n", oldb[j].rk);
+        scanf("%s", new.rk);
+        
+        bk_bd = fopen("books.csv", "w");
+        for (int k = 0; k < i; ++k)
+        {
+          if (k==j)
+          {
+            fprintf(bk_bd, "%s;%s;%s;%s;%s\n", ISBN, new.FIO, new.naz, new.vs, new.rk);
+            k++;
+          }
+          fprintf(bk_bd, "%s;%s;%s;%s;%s\n", oldb[k].ISBN, oldb[k].FIO, oldb[k].naz, oldb[k].vs, oldb[k].rk);
+        }
+        fclose(bk_bd);
+        printf("SUCCES!\n");
+        return;
+      }
+  }
+  printf("No such book\n");
   return;
 }
 
@@ -460,7 +576,15 @@ void main_b(char* usr)
         return main_b(usr);
         break;
      case 8:
-        sdch_vdch();
+        sdacha();
+        return main_b(usr);
+        break;
+     case 9:
+        vidacha();
+        return main_b(usr);
+        break;
+     case 10:
+        edit_b();
         return main_b(usr);
         break;
      case -1:
