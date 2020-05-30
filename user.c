@@ -4,7 +4,13 @@
 #include <time.h>
 #define N 100 //кол-во выводимых строк из бд
 
-struct students {
+struct cmd
+{
+    char* cmd;   
+} comd[10];
+
+struct students
+{
   char zach[7]; 
   char ser[24]; 
   char nam[24];
@@ -20,7 +26,8 @@ struct students_books
   char date[16];
 } BD[N];
 
-struct books {
+struct books
+{
   char ISBN[14]; 
   char FIO[24]; 
   char naz[24];
@@ -28,7 +35,8 @@ struct books {
   char rk[24];
 } oldb[N];
 
-struct user {
+struct user
+{
   char lgn[50]; 
   char psw[50]; 
   int bk; //pomenyzt' na char
@@ -59,6 +67,16 @@ void login(int* bk, int* us, char* login)
 	    	scanf("%s", pass);
 	      if (!strcmp(pass, lin[j].psw))
 	      {
+	      	char atime[32];
+			long int stime;
+			struct tm *ltime;
+			FILE *log;
+			stime = time (NULL);
+			ltime = localtime (&stime);
+			strftime (atime, 32, "%d.%m.%Y_%X", ltime);
+			log=fopen("library.log", "a");
+			fprintf(log, "\"%s\";%s;\"Start_of_session\"\n", atime, login);
+			fclose(log);
 
 	      	*bk=lin[j].bk;
 			*us=lin[j].st;
