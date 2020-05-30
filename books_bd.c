@@ -1,31 +1,34 @@
 
-int cmd_b(char cmdi[])
+int cmd_b(char cmdi[], char usr[])
 {
-  char cmd[100]="add_buk6all_buk1del_buk2bup_buk3fnd_buk4rtr_buk5fnd_b_s7sdh_vdh8";
-  if (cmdi[0]=='0')
-  {
-    return 0;
-  }
-  int i=0, j=0, k=0;
-  while(cmd[i]!='\0')
-  {
-    while(cmdi[j]!='\0')
+    comd[0].cmd="0";
+    comd[1].cmd="List";
+    comd[2].cmd="Delete";
+    comd[3].cmd="BackUp";
+    comd[4].cmd="Find";
+    comd[5].cmd="Restore";
+    comd[6].cmd="Add_Book";
+    comd[7].cmd="Find_Student";
+    comd[8].cmd="Sdat'_Vidat'";
+
+  for (int i=0; i < 9; ++i)
     {
-      if (cmd[i]==cmdi[j])
-      {
-        k++;
-      }
-      i++;
-      j++;
+        if (!strcmp(cmdi, comd[i].cmd))
+        {
+          char atime[32];
+          long int stime;
+          struct tm *ltime;
+          FILE *log;
+          stime = time (NULL);
+          ltime = localtime (&stime);
+          strftime (atime, 32, "%d.%m.%Y_%X", ltime);
+          log=fopen("library.log", "a");
+          fprintf(log, "\"%s\";%s;\"Books_%s\"\n", atime, usr, comd[i].cmd);
+          fclose(log);
+
+           return i;
+        }
     }
-    if (k==7)
-    {
-      return (cmd[i]-'0');
-    }
-    k=0;
-    j=0;
-    i++;
-  }
     return -1;
 }
 
@@ -398,10 +401,6 @@ void sdch_vdch()
 
 void main_b(char* usr)
 { 
-  long int stime;
-  struct tm *ltime;
-  char atime[32];
-  FILE *log;
   int i=0;
   char cmdi[50], c;
   c=getchar();
@@ -411,6 +410,16 @@ void main_b(char* usr)
   }
   if (c==EOF)
   {
+    char atime[32];
+    long int stime;
+    struct tm *ltime;
+    FILE *log;
+    stime = time (NULL);
+    ltime = localtime (&stime);
+    strftime (atime, 32, "%d.%m.%Y_%X", ltime);
+    log=fopen("library.log", "a");
+    fprintf(log, "\"%s\";%s;\"Books_End_of_session\"\n", atime, usr);
+    fclose(log);
    exit(0);
   }  
   while(c!='\n')
@@ -420,86 +429,38 @@ void main_b(char* usr)
      c=getchar();
    }
    cmdi[i]='\0';
-   switch(cmd_b(cmdi))
+   switch(cmd_b(cmdi, usr))
    {
-     case 6:
-        add_b();
-            stime = time (NULL);
-            ltime = localtime (&stime);
-            strftime (atime, 32, "%d.%m.%Y_%X", ltime);
-            log=fopen("library.log", "a");
-            fprintf(log, "\"%s\";%s;\"BookAdd\"\n", atime, usr);
-            fclose(log);
-        return main_b(usr);
-        break;
      case 1:
         all_b();
-            stime = time (NULL);
-            ltime = localtime (&stime);
-            strftime (atime, 32, "%d.%m.%Y_%X", ltime);
-            log=fopen("library.log", "a");
-            fprintf(log, "\"%s\";%s;\"BookTable\"\n", atime, usr);
-            fclose(log);
         return main_b(usr);
         break;
      case 2:
         dell_b();
-            stime = time (NULL);
-            ltime = localtime (&stime);
-            strftime (atime, 32, "%d.%m.%Y_%X", ltime);
-            log=fopen("library.log", "a");
-            fprintf(log, "\"%s\";%s;\"BookDelete\"\n", atime, usr);
-            fclose(log);
         return main_b(usr);
         break;
      case 3:
         back_b();
-            stime = time (NULL);
-            ltime = localtime (&stime);
-            strftime (atime, 32, "%d.%m.%Y_%X", ltime);
-            log=fopen("library.log", "a");
-            fprintf(log, "\"%s\";%s;\"BookBackUp\"\n", atime, usr);
-            fclose(log);
         return main_b(usr);
         break;
      case 4:
         find_b();
-            stime = time (NULL);
-            ltime = localtime (&stime);
-            strftime (atime, 32, "%d.%m.%Y_%X", ltime);
-            log=fopen("library.log", "a");
-            fprintf(log, "\"%s\";%s;\"BookSerch\"\n", atime, usr);
-            fclose(log);        
         return main_b(usr);
         break;
      case 5:
         restore_b();
-            stime = time (NULL);
-            ltime = localtime (&stime);
-            strftime (atime, 32, "%d.%m.%Y_%X", ltime);
-            log=fopen("library.log", "a");
-            fprintf(log, "\"%s\";%s;\"BookRestore\"\n", atime, usr);
-            fclose(log);        
+        return main_b(usr);
+        break;
+     case 6:
+        add_b();
         return main_b(usr);
         break;
      case 7:
         fnd_b_s();
-            stime = time (NULL);
-            ltime = localtime (&stime);
-            strftime (atime, 32, "%d.%m.%Y_%X", ltime);
-            log=fopen("library.log", "a");
-            fprintf(log, "\"%s\";%s;\"BookFindStudent\"\n", atime, usr);
-            fclose(log);        
         return main_b(usr);
         break;
      case 8:
         sdch_vdch();
-            stime = time (NULL);
-            ltime = localtime (&stime);
-            strftime (atime, 32, "%d.%m.%Y_%X", ltime);
-            log=fopen("library.log", "a");
-            fprintf(log, "\"%s\";%s;\"BookSdach-Vidacha\"\n", atime, usr);
-            fclose(log);        
         return main_b(usr);
         break;
      case -1:
@@ -507,12 +468,6 @@ void main_b(char* usr)
         return main_b(usr);
         break;
      case 0:
-            stime = time (NULL);
-            ltime = localtime (&stime);
-            strftime (atime, 32, "%d.%m.%Y_%X", ltime);
-            log=fopen("library.log", "a");
-            fprintf(log, "\"%s\";%s;\"BookBackToMenu\"\n", atime, usr);
-            fclose(log);
         return;
    }
 }
