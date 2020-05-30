@@ -7,7 +7,7 @@
 struct cmd
 {
     char* cmd;   
-} comd[10];
+} comd[13];
 
 struct students
 {
